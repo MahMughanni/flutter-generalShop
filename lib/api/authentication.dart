@@ -8,6 +8,7 @@ import 'api_utl.dart';
 class Authentication {
   Future<User> register(String first_name, String last_name, String email,
       String password) async {
+
     Map<String, String> body = {
       'first_name': first_name,
       'last_name': last_name,
@@ -31,10 +32,8 @@ class Authentication {
     Map<String, String> headers = {'Accept': 'application/json'};
 
     Map<String, String> body = {'email': email, 'password': password};
-
-    http.Response response =
-        await http.post(APiUtl.AUTH_LOGIN, headers: headers, body: body);
-
+    http.Response response = await http.post(APiUtl.AUTH_LOGIN, headers: headers, body: body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
       var data = body['data'];
