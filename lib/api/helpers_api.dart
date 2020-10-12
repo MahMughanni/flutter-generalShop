@@ -1,13 +1,19 @@
+import 'package:flutter_generalshop/utility/City.dart';
 import 'package:flutter_generalshop/utility/Country.dart';
+import 'package:flutter_generalshop/product/product_category.dart';
+import 'package:flutter_generalshop/product/product_tags.dart';
+import 'package:flutter_generalshop/utility/country_state.dart';
 
 class HelperAPi {
-  void fetchCategories(int page) {}
+  Future<List<ProductCategory>> fetchCategories(int page) async {
+    Map<String, String> headers = {'Accept': 'application/json'};
+  }
 
-  void fetchTags(int page) {}
+  Future<List<ProductTags>> fetchTags(int page) async {}
 
-  void fetchCountries(int page) {}
+  Future<List<Country>> fetchCountries(int page) {}
 
-  void fetchStates(Country country) {}
+  Future<List<CountryState>> fetchStates(Country country) {}
 
-  void fetchCities(Country country) {}
+  Future<List<City>> fetchCities(Country country) {}
 }
