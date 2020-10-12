@@ -9,12 +9,12 @@ class APiUtl {
   static const String TAGS = MAIN_API_URL + 'tags';
 
   static String CITIES(int id) {
-    return MAIN_API_URL + COUNTRIES + '/' + id.toString() + '/cities';
+    return MAIN_API_URL  + 'countries/' + id.toString() + '/cities';
   }
 
   static const String CATEGORIES = MAIN_API_URL + 'categories';
 
   static String STATES(int id) {
-    return MAIN_API_URL + COUNTRIES + '/' + id.toString() + '/states';
+    return MAIN_API_URL  + 'countries/' + id.toString() + '/states';
   }
 }

@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_generalshop/api/api_product.dart';
 import 'package:flutter_generalshop/api/authentication.dart';
+import 'package:flutter_generalshop/api/helpers_api.dart';
+import 'package:flutter_generalshop/exceptions/login_failed.dart';
+import 'package:flutter_generalshop/exceptions/resource_not_found.dart';
 import 'package:flutter_generalshop/product/product.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
 
@@ -25,7 +29,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ProductAPI productAPI = ProductAPI();
+  HelperAPi helperAPi = HelperAPi();
+  Authentication authentication = Authentication();
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +39,8 @@ class _HomePageState extends State<HomePage> {
         title: Text('General Shop'),
       ),
       body: FutureBuilder(
-        future: productAPI.fetchProducts(1),
-        builder: (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+        future: authentication.login('asdas@asdas.com', 'asdasdas'),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
               _error('nothing happened');
@@ -49,6 +54,15 @@ class _HomePageState extends State<HomePage> {
               break;
             case ConnectionState.done:
               if (snapshot.hasError) {
+                switch (snapshot.error) {
+                  case LoginFailed:
+                    return _error('Username is not correct');
+                    break;
+                  case ResourceNotFound:
+                    return _error('not found resources');
+                    break;
+
+                }
                 return _error(snapshot.error.toString());
               } else {
                 if (!snapshot.hasData) {
@@ -56,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                 } else {
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int position) {
-                      return _drawProducts(snapshot.data[position]);
+                      return _drawCard(snapshot.data[position]);
                     },
                     itemCount: snapshot.data.length,
                   );
@@ -70,6 +84,15 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+_drawCard(dynamic item) {
+  return Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Text(item.state_name),
+    ),
+  );
 }
 
 _loading() {

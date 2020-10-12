@@ -1,6 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter_generalshop/api/api_utl.dart';
+import 'package:flutter_generalshop/exceptions/redirectionsFound.dart';
+import 'package:flutter_generalshop/exceptions/resource_not_found.dart';
 import 'package:flutter_generalshop/utility/City.dart';
 import 'package:flutter_generalshop/utility/Country.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
@@ -15,69 +16,140 @@ class HelperAPi {
     String url = APiUtl.CATEGORIES + '?page=' + page.toString();
 
     http.Response response = await http.get(url, headers: headers);
-    List<ProductCategory> categoriesList = [];
 
-    if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      for (var item in body['data']) {
-        categoriesList.add(ProductCategory.fromJson(item));
-      }
+    switch (response.statusCode) {
+      case 200:
+        List<ProductCategory> categoriesList = [];
+        var body = jsonDecode(response.body);
+        for (var item in body['data']) {
+          categoriesList.add(ProductCategory.fromJson(item));
+        }
+
+        return categoriesList;
+        break;
+      case 404:
+        throw ResourceNotFound('Categories');
+        break;
+      case 301:
+      case 302:
+      case 303:
+        throw RedirectionFound();
+        break;
+      default:
+        return null;
+        break ;
     }
-
-    return categoriesList;
   }
 
   Future<List<ProductTags>> fetchTags(int page) async {
     String url = APiUtl.TAGS + '?page=' + page.toString();
     http.Response response = await http.get(url, headers: headers);
-    List<ProductTags> tagsList = [];
-    if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      for (var item in body['data']) {
-        tagsList.add(ProductTags.fromJson(item));
-      }
-    }
 
-    return tagsList;
+    switch (response.statusCode) {
+      case 200:
+        List<ProductTags> tagsList = [];
+        var body = jsonDecode(response.body);
+        for (var item in body['data']) {
+          tagsList.add(ProductTags.fromJson(item));
+        }
+        return tagsList;
+        break;
+      case 404:
+        throw ResourceNotFound('Tags');
+        break;
+      case 301:
+      case 302:
+      case 303:
+        throw RedirectionFound();
+        break;
+      default:
+        return null;
+        break ;
+
+    }
   }
 
   Future<List<Country>> fetchCountries(int page) async {
     String url = APiUtl.COUNTRIES + '?page=' + page.toString();
     http.Response response = await http.get(url, headers: headers);
-    List<Country> countriesList = [];
-    if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      for (var item in body['data']) {
-        countriesList.add(Country.fromJson(item));
-      }
-    }
 
-    return countriesList;
+    switch (response.statusCode) {
+      case 200:
+        List<Country> countriesList = [];
+        var body = jsonDecode(response.body);
+        for (var item in body['data']) {
+          countriesList.add(Country.fromJson(item));
+        }
+        return countriesList;
+        break;
+      case 404:
+        throw ResourceNotFound('Countries');
+        break;
+      case 301:
+      case 302:
+      case 303:
+        throw RedirectionFound();
+        break;
+      default:
+        return null;
+        break ;
+
+    }
   }
 
-  Future<List<CountryState>> fetchStates(Country country, int page) async {
-    String url = APiUtl.STATES(country.country_id) + '?page=' + page.toString();
+  Future<List<CountryState>> fetchStates(int country_id, int page) async {
+    String url = APiUtl.STATES(country_id) + '?page=' + page.toString();
     http.Response response = await http.get(url, headers: headers);
-    List<CountryState> statesList = [];
-    if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      for (var item in body['data']) {
-        statesList.add(CountryState.fromJspn(item));
-      }
+
+    switch (response.statusCode) {
+      case 200:
+        List<CountryState> statesList = [];
+        var body = jsonDecode(response.body);
+        for (var item in body['data']) {
+          statesList.add(CountryState.fromJspn(item));
+        }
+        return statesList;
+        break;
+      case 404:
+        throw ResourceNotFound('States');
+        break;
+      case 301:
+      case 302:
+      case 303:
+        throw RedirectionFound();
+        break;
+      default:
+        return null;
+        break ;
+
     }
-    return statesList;
   }
 
-  Future<List<City>> fetchCities(Country country, int page) async {
-    String url = APiUtl.CITIES(country.country_id) + '?page=' + page.toString();
+  Future<List<City>> fetchCities(int country_id, int page) async {
+    String url = APiUtl.CITIES(country_id) + '?page=' + page.toString();
     http.Response response = await http.get(url, headers: headers);
-    List<City> citiesList = [];
-    if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      for (var item in body['data']) {
-        citiesList.add(City.formJson(item));
-      }
+
+    switch (response.statusCode) {
+      case 200:
+        List<City> citiesList = [];
+        var body = jsonDecode(response.body);
+        for (var item in body['data']) {
+          citiesList.add(City.formJson(item));
+        }
+        return citiesList;
+        break;
+      case 404:
+        throw ResourceNotFound('Cities');
+        break;
+      case 301:
+      case 302:
+      case 303:
+        throw RedirectionFound();
+        break;
+      default:
+        return null;
+        break ;
+
     }
-    return citiesList;
   }
 }
