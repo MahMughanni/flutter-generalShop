@@ -6,6 +6,7 @@ class APiUtl {
   static const String AUTH_REGISTER = MAIN_API_URL + 'auth/register';
   static const String PRODUCTS = MAIN_API_URL + 'products';
   static const String COUNTRIES = MAIN_API_URL + 'countries';
+  static const String TAGS = MAIN_API_URL + 'tags';
 
   static String CITIES(int id) {
     return MAIN_API_URL + COUNTRIES + '/' + id.toString() + '/cities';
