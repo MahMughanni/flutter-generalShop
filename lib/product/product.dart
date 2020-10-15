@@ -1,3 +1,4 @@
+import 'package:flutter_generalshop/exceptions/exceptions.dart';
 import 'package:flutter_generalshop/product/product_images.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
 import 'package:flutter_generalshop/product/product_tags.dart';
@@ -28,6 +29,25 @@ class Product {
       this.productReviews);
 
   Product.fromJson(Map<String, dynamic> jsonObject) {
+
+    assert(jsonObject['product_id'] != null, 'Product ID is null ');
+    assert(jsonObject['product_title'] != null, 'Product Title is null ');
+    assert(jsonObject['product_description'] != null, 'Product Description is null ');
+    assert(jsonObject['product_price'] != null, 'Product Price is null ');
+
+    if (jsonObject['product_id'] == null) {
+      throw PropertyIsRequired('Product ID');
+    }
+    if (jsonObject['product_title'] == null) {
+      throw PropertyIsRequired('Product Title ');
+    }
+    if (jsonObject['product_description'] == null) {
+      throw PropertyIsRequired('Product Description');
+    }
+    if (jsonObject['product_price'] == null) {
+      throw PropertyIsRequired('Product Price ');
+    }
+
     this.product_id = jsonObject['product_id'];
     this.product_title = jsonObject['product_title'];
     this.product_description = jsonObject['product_description'];

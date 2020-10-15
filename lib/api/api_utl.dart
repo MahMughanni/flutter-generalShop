@@ -1,3 +1,6 @@
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter_generalshop/exceptions/exceptions.dart';
+
 class APiUtl {
   //local url
   static const String MAIN_API_URL = 'http://44.239.196.64/api/';
@@ -16,5 +19,18 @@ class APiUtl {
 
   static String STATES(int id) {
     return MAIN_API_URL  + 'countries/' + id.toString() + '/states';
+  }
+
+
+
+
+
+}
+
+Future<void> checkInternet () async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult != ConnectivityResult.mobile &&
+      connectivityResult != ConnectivityResult.wifi) {
+    throw NoInternetConnection();
   }
 }

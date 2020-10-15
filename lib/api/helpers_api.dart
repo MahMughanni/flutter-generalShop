@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_generalshop/api/api_utl.dart';
-import 'package:flutter_generalshop/exceptions/redirectionsFound.dart';
-import 'package:flutter_generalshop/exceptions/resource_not_found.dart';
+import 'package:flutter_generalshop/exceptions/exceptions.dart';
 import 'package:flutter_generalshop/utility/City.dart';
 import 'package:flutter_generalshop/utility/Country.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
@@ -10,9 +9,12 @@ import 'package:flutter_generalshop/utility/country_state.dart';
 import 'package:http/http.dart' as http;
 
 class HelperAPi {
+
   Map<String, String> headers = {'Accept': 'application/json'};
 
   Future<List<ProductCategory>> fetchCategories(int page) async {
+    await checkInternet() ;
+
     String url = APiUtl.CATEGORIES + '?page=' + page.toString();
 
     http.Response response = await http.get(url, headers: headers);
@@ -37,11 +39,13 @@ class HelperAPi {
         break;
       default:
         return null;
-        break ;
+        break;
     }
   }
 
   Future<List<ProductTags>> fetchTags(int page) async {
+    await checkInternet();
+
     String url = APiUtl.TAGS + '?page=' + page.toString();
     http.Response response = await http.get(url, headers: headers);
 
@@ -64,18 +68,18 @@ class HelperAPi {
         break;
       default:
         return null;
-        break ;
-
+        break;
     }
   }
 
   Future<List<Country>> fetchCountries(int page) async {
+    await checkInternet();
+
     String url = APiUtl.COUNTRIES + '?page=' + page.toString();
     http.Response response = await http.get(url, headers: headers);
-
+    List<Country> countriesList = [];
     switch (response.statusCode) {
       case 200:
-        List<Country> countriesList = [];
         var body = jsonDecode(response.body);
         for (var item in body['data']) {
           countriesList.add(Country.fromJson(item));
@@ -92,18 +96,17 @@ class HelperAPi {
         break;
       default:
         return null;
-        break ;
-
+        break;
     }
   }
 
   Future<List<CountryState>> fetchStates(int country_id, int page) async {
+    await checkInternet();
     String url = APiUtl.STATES(country_id) + '?page=' + page.toString();
     http.Response response = await http.get(url, headers: headers);
-
+    List<CountryState> statesList = [];
     switch (response.statusCode) {
       case 200:
-        List<CountryState> statesList = [];
         var body = jsonDecode(response.body);
         for (var item in body['data']) {
           statesList.add(CountryState.fromJspn(item));
@@ -120,17 +123,18 @@ class HelperAPi {
         break;
       default:
         return null;
-        break ;
-
+        break;
     }
   }
 
   Future<List<City>> fetchCities(int country_id, int page) async {
+    await checkInternet();
+
     String url = APiUtl.CITIES(country_id) + '?page=' + page.toString();
     http.Response response = await http.get(url, headers: headers);
 
     switch (response.statusCode) {
-      case 200:
+    case 200:
         List<City> citiesList = [];
         var body = jsonDecode(response.body);
         for (var item in body['data']) {
@@ -148,8 +152,9 @@ class HelperAPi {
         break;
       default:
         return null;
-        break ;
-
+        break;
     }
   }
+
+
 }
