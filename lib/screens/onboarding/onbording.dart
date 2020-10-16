@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_generalshop/screens/home_page.dart';
 import 'package:flutter_generalshop/screens/onboarding/onboarding_model.dart';
 import 'package:flutter_generalshop/screens/onboarding/single_onboarding_screen.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:flutter_generalshop/screens/utilities/size_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoarding extends StatefulWidget {
   @override
@@ -109,16 +111,23 @@ class _OnBoardingState extends State<OnBoarding> {
   }
 
   Widget _showButton() {
+    double offset = (screenConfig.screenType == ScreenType.SMALL) ? 0.05 : 0.1;
     return Container(
       child: Transform.translate(
-        offset: Offset(0, -(screenHeight * .05)),
+        offset: Offset(0, -(screenHeight * offset)),
         child: SizedBox(
           width: screenWidth * 0.75,
           height: widgetSize.buttonHeight,
           child: RaisedButton(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-            onPressed: () {},
+            onPressed: () async {
+              var pref = await SharedPreferences.getInstance();
+              pref.setBool('is_seen', true);
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => HomePage())
+              );
+            },
             child: Text(
               'Get start',
               style: TextStyle(
