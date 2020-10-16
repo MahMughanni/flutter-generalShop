@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_generalshop/screens/onboarding/onboarding_model.dart';
 import 'package:flutter_generalshop/screens/onboarding/single_onboarding_screen.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
+import 'package:flutter_generalshop/screens/utilities/size_config.dart';
 
 class OnBoarding extends StatefulWidget {
   @override
@@ -13,12 +14,15 @@ class _OnBoardingState extends State<OnBoarding> {
   int currentIndex = 0;
   double screenHeight;
   bool lastPage = false;
+  ScreenConfig screenConfig;
+
+  WidgetSize widgetSize;
 
   double screenWidth;
 
   List<OnBoardingModel> boardingList = [
     OnBoardingModel(
-      image: 'assets/images/board1.png',
+      image: 'assets/images/board1.jpg',
       title: 'Welcome!',
       description: 'Now we Are in the big leagues getting our turn at back , ',
     ),
@@ -28,7 +32,7 @@ class _OnBoardingState extends State<OnBoarding> {
       description: 'Now we Are in the big leagues getting our turn at back ,',
     ),
     OnBoardingModel(
-      image: 'assets/images/board2.jpg',
+      image: 'assets/images/board4.png',
       title: 'Enjoy Purchase',
       description: 'Now we Are in the big leagues getting our turn at back ,',
     ),
@@ -53,6 +57,9 @@ class _OnBoardingState extends State<OnBoarding> {
     double marginTop = MediaQuery.of(context).size.height * 0.15;
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+
+    screenConfig = ScreenConfig(context);
+    widgetSize = WidgetSize(screenConfig);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -107,7 +114,7 @@ class _OnBoardingState extends State<OnBoarding> {
         offset: Offset(0, -(screenHeight * .05)),
         child: SizedBox(
           width: screenWidth * 0.75,
-          height: 50,
+          height: widgetSize.buttonHeight,
           child: RaisedButton(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
@@ -115,7 +122,7 @@ class _OnBoardingState extends State<OnBoarding> {
             child: Text(
               'Get start',
               style: TextStyle(
-                  fontSize: 20,
+                  fontSize: widgetSize.buttonFontSize,
                   letterSpacing: 1,
                   color: Colors.white,
                   fontWeight: FontWeight.normal),
@@ -137,8 +144,8 @@ class _OnBoardingState extends State<OnBoarding> {
               ? ScreenUtilities.mainBlue
               : ScreenUtilities.lightGray,
         ),
-        width: 30,
-        height: 5,
+        width: widgetSize.pagerDotsWidth,
+        height: widgetSize.pagerDotsHeight,
         margin: (i == qty - 1)
             ? EdgeInsets.only(right: 0)
             : EdgeInsets.only(right: 20),
