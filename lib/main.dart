@@ -26,18 +26,36 @@ class GeneralShop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       title: 'General Shop',
       home: homePage,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primaryColor: Colors.white,
-          scaffoldBackgroundColor: Colors.white,
+        primaryColor: Colors.white,
+        scaffoldBackgroundColor: Colors.white,
+        primaryIconTheme: IconThemeData(
+          color: Colors.grey.shade900,
+        ),
+        appBarTheme: AppBarTheme(
+          elevation: 0,
+          centerTitle: true,
           textTheme: TextTheme(
             headline6: TextStyle(
-              color: ScreenUtilities.appBarTitle ,
-            )
-          )
+                color: ScreenUtilities.appBarTitle,
+                fontFamily: "Quicksand",
+                fontWeight: FontWeight.w700,
+                fontSize: 22),
+          ),
+        ),
+        tabBarTheme: TabBarTheme(
+            labelColor: ScreenUtilities.appBarTitle,
+            labelStyle: TextStyle(
+                fontFamily: "Quicksand",
+                fontSize: 19,
+                fontWeight: FontWeight.w400),
+            labelPadding: EdgeInsets.all(16),
+            indicatorSize: TabBarIndicatorSize.label,
+            unselectedLabelColor: ScreenUtilities.unselected),
+        indicatorColor: ScreenUtilities.mainBlue,
       ),
     );
   }

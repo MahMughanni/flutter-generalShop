@@ -31,6 +31,7 @@ dependencies:
   http: ^0.12.2
   connectivity: ^0.4.9+3
   shared_preferences: ^0.5.12+2
+  font_awesome_flutter: ^8.10.0
 
 dev_dependencies:
   flutter_test:
@@ -65,12 +66,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Quicksand
+      fonts:
+        - asset: assets/font/Quicksand-Bold.ttf
+          weight: 700
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

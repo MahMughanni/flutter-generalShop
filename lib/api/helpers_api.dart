@@ -9,13 +9,12 @@ import 'package:flutter_generalshop/utility/country_state.dart';
 import 'package:http/http.dart' as http;
 
 class HelperAPi {
-
   Map<String, String> headers = {'Accept': 'application/json'};
 
-  Future<List<ProductCategory>> fetchCategories(int page) async {
-    await checkInternet() ;
+  Future<List<ProductCategory>> fetchCategories() async {
+    await checkInternet();
 
-    String url = APiUtl.CATEGORIES + '?page=' + page.toString();
+    String url = APiUtl.CATEGORIES;
 
     http.Response response = await http.get(url, headers: headers);
 
@@ -134,7 +133,7 @@ class HelperAPi {
     http.Response response = await http.get(url, headers: headers);
 
     switch (response.statusCode) {
-    case 200:
+      case 200:
         List<City> citiesList = [];
         var body = jsonDecode(response.body);
         for (var item in body['data']) {
@@ -155,6 +154,4 @@ class HelperAPi {
         break;
     }
   }
-
-
 }
