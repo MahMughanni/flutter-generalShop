@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
+import 'package:flutter_generalshop/screens/utilities/size_config.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -6,15 +8,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ScreenConfig screenConfig;
+
   @override
   Widget build(BuildContext context) {
+    screenConfig = ScreenConfig(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        elevation: .1,
+        title: Text(
+          'Home',
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Icon(
+              Icons.search,
+              color: Colors.grey.shade900,
+            ),
+          )
+        ],
       ),
-      body: Container(
-        color: Colors.teal,
-      ),
+      body: Container(),
     );
   }
 }
