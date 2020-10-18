@@ -2,7 +2,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter_generalshop/exceptions/exceptions.dart';
 
 class APiUtl {
-  //local url
   static const String MAIN_API_URL = 'http://44.239.196.64/api/';
   // static const String MAIN_API_URL = 'https://generalshop.test/api/';
 

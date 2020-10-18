@@ -56,6 +56,7 @@ class GeneralShop extends StatelessWidget {
             indicatorSize: TabBarIndicatorSize.label,
             unselectedLabelColor: ScreenUtilities.unselected),
         indicatorColor: ScreenUtilities.mainBlue,
+
       ),
     );
   }

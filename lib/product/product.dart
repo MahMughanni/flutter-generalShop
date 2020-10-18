@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_generalshop/exceptions/exceptions.dart';
-import 'package:flutter_generalshop/product/product_images.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
 import 'package:flutter_generalshop/product/product_tags.dart';
 import 'package:flutter_generalshop/product/product_unit.dart';
@@ -17,12 +15,7 @@ class Product {
 
   List<ProductReviews> productReviews;
 
-  List images = [
-    'https://image.freepik.com/free-vector/fashion-store-interior-with-counter-mannequins-hangers-showcase-with-dresses-shoes_107791-3001.jpg',
-    'https://image.freepik.com/free-vector/women-buying-clothes-clothing-store-isolated-flat-vector-illustration-cartoon-girls-consumers-choosing-modern-apparel-garment-dress-fashion-shop-style_74855-8696.jpg',
-    'https://image.freepik.com/free-vector/satisfied-clients-checkout-desk-with-purchases_82574-12903.jpg',
-    'https://image.freepik.com/free-vector/online-shopping-concept-landing-page_52683-22153.jpg'
-  ];
+
 
   Product(
       this.product_id,
@@ -60,12 +53,13 @@ class Product {
     this.product_id = jsonObject['product_id'];
     this.product_title = jsonObject['product_title'];
     this.product_description = jsonObject['product_description'];
+    this.product_unit = ProductUnit.fromJson(jsonObject['product_unit']);
     this.product_total = double.tryParse(jsonObject['product_total']);
     this.product_price = double.tryParse(jsonObject['product_price']);
     this.product_discount = double.tryParse(jsonObject['product_discount']);
-    this.product_unit = ProductUnit.fromJson(jsonObject['product_unit']);
-    this.productCategory =
-        ProductCategory.fromJson(jsonObject['product_category']);
+    this.productCategory = ProductCategory.fromJson(jsonObject['product_category']);
+    _setTags(jsonObject['product_tags']);
+
     productImages = [];
     if (jsonObject['product_images'] != null) {
       _setImages(jsonObject['product_images']);
@@ -76,7 +70,6 @@ class Product {
       _setReview(jsonObject['product_reviews']);
     }
 
-    _setTags(jsonObject['product_tags']);
   }
 
   void _setTags(List<dynamic> tagsJson) {
@@ -113,8 +106,8 @@ class Product {
   }
 
   String featuredImage() {
-    if (this.images.length > 0) {
-      return this.images[0];
+    if (this.productImages.length > 0) {
+      return this.productImages[0];
     }
     return 'https://image.freepik.com/free-vector/online-shopping-concept-landing-page_52683-22153.jpg';
   }

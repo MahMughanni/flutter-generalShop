@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_generalshop/api/helpers_api.dart';
 import 'package:flutter_generalshop/product/home_product.dart';
 import 'package:flutter_generalshop/product/product.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
+import 'package:flutter_generalshop/screens/streams/dots_stream.dart';
+import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:flutter_generalshop/screens/utilities/size_config.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,19 +20,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   HelperAPi helperAPi = HelperAPi();
   HomeProductBloc homeProductBloc = HomeProductBloc();
   List<ProductCategory> categoryList;
+  PageController _pageController;
+  WidgetSize widgetSize;
+  DotsStream dotsStream = DotsStream();
 
   TabController tabController;
   int currentIndex = 0;
+  int dotsCurrentIndex = 1;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: 1, viewportFraction: 0.78);
   }
 
   @override
   void dispose() {
     tabController.dispose();
     homeProductBloc.dispose();
+    dotsStream.dispose();
     super.dispose();
   }
 
@@ -49,7 +59,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
           case ConnectionState.active:
             _loading();
-            break ;
+            break;
           case ConnectionState.done:
             if (snapShot.hasError) {
               return _error(snapShot.error.toString());
@@ -58,9 +68,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 return _error("No data founded");
               } else {
                 this.categoryList = snapShot.data;
-                homeProductBloc.categoryIDSink
+                homeProductBloc.fetchProducts
                     .add(this.categoryList[0].category_id);
-                return _screen(snapShot.data);
+                return _screen(snapShot.data, context);
               }
             }
             break;
@@ -70,7 +80,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _screen(List<ProductCategory> categories) {
+  Widget _screen(List<ProductCategory> categories, BuildContext context) {
     tabController = TabController(
       initialIndex: 0,
       vsync: this,
@@ -96,9 +106,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         bottom: TabBar(
           controller: tabController,
           isScrollable: true,
+          indicatorWeight: 3,
           tabs: _tabs(categories),
           onTap: (int index) {
-            homeProductBloc.categoryIDSink.add(categoryList[index].category_id);
+            homeProductBloc.fetchProducts.add(categoryList[index].category_id);
           },
         ),
       ),
@@ -110,19 +121,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
                 return _error("noting working");
-                break;
+
               case ConnectionState.waiting:
+                print(snapshot.connectionState);
                 return _loading();
                 break;
+
               case ConnectionState.done:
               case ConnectionState.active:
+                print(snapshot.connectionState);
                 if (snapshot.hasError) {
                   return _error(snapshot.error.toString());
                 } else {
                   if (!snapshot.hasData) {
-                    return _error("no data return");
+                    return _error("No Data Return");
                   } else {
-                    return _drawProducts(snapshot.data);
+                    return _drawProducts(snapshot.data, context);
                   }
                 }
                 break;
@@ -133,44 +147,113 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-}
 
-List<Tab> _tabs(List<ProductCategory> categories) {
-  List<Tab> tabsList = [];
-  for (ProductCategory category in categories) {
-    tabsList.add(Tab(
-      text: category.category_name,
-    ));
+  List<Tab> _tabs(List<ProductCategory> categories) {
+    List<Tab> tabsList = [];
+    for (ProductCategory category in categories) {
+      tabsList.add(Tab(
+        text: category.category_name,
+      ));
+    }
+    return tabsList;
   }
-  return tabsList;
-}
 
-Widget _drawProducts(List<Product> products) {
-  return Container(
+//return just 5 products
+  List<Product> _randomTopProducts(List<Product> products) {
+    List<int> indexes = [];
+    Random random = Random();
+    int counter = 5;
+    List<Product> newProducts = [];
+    do {
+      int rnd = random.nextInt(products.length);
+      if (!indexes.contains(rnd)) {
+        indexes.add(rnd);
+      }
+      counter--;
+    } while (counter != 0);
+
+    for (int index in indexes) {
+      newProducts.add(products[index]);
+    }
+    return newProducts;
+  }
+
+  Widget _drawProducts(List<Product> products, BuildContext context) {
+    List<Product> topProducts = _randomTopProducts(products);
+    return Container(
       child: Column(
-    children: [
-      Flexible(
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: products.length,
-            itemBuilder: (context, position) {
-              return Card(
-                child: Container(
-                  child: Image(
-                    image: NetworkImage(products[position].featuredImage()),
-                  ),
-                ),
+        children: [
+          Flexible(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.25,
+              child: PageView.builder(
+                  onPageChanged: (int index) {
+                    dotsStream.dotsSink.add(index);
+                  },
+                  controller: _pageController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: products.length,
+                  itemBuilder: (context, position) {
+                    return Card(
+                      margin: EdgeInsets.only(right: 4, left: 4),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9)),
+                      clipBehavior: Clip.hardEdge,
+                      child: Container(
+                        child: Image(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              topProducts[position].featuredImage()),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+          ),
+          Container(
+              child: StreamBuilder<int>(
+            stream: dotsStream.dots,
+            builder: (context, snapShot) {
+              return Row(
+                children: _drawDots(topProducts.length, context),
               );
-            }),
+            },
+          )),
+        ],
       ),
-    ],
-  ));
+    );
+  }
+
+  List<Widget> _drawDots(int qty, BuildContext context) {
+    List<Widget> widgets = [];
+    for (int i = 0; i < qty; i++) {
+      widgets.add(Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: (i == dotsCurrentIndex)
+              ? ScreenUtilities.mainBlue
+              : ScreenUtilities.lightGray,
+        ),
+        width: widgetSize.pagerDotsWidth,
+        height: widgetSize.pagerDotsHeight,
+        margin: (i == qty - 1)
+            ? EdgeInsets.only(right: 0)
+            : EdgeInsets.only(right: 20),
+      ));
+    }
+
+    return widgets;
+  }
 }
 
 _loading() {
   return Container(
     child: Center(
-      child: CircularProgressIndicator(),
+      child: CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+        backgroundColor: Colors.deepPurple,
+        strokeWidth: 1.3,
+      ),
     ),
   );
 }
