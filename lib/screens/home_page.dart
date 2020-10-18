@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_generalshop/api/helpers_api.dart';
+import 'package:flutter_generalshop/product/home_product.dart';
+import 'package:flutter_generalshop/product/product.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
-import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:flutter_generalshop/screens/utilities/size_config.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,8 +14,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   ScreenConfig screenConfig;
   HelperAPi helperAPi = HelperAPi();
+  HomeProductBloc homeProductBloc = HomeProductBloc();
+  List<ProductCategory> categoryList;
 
   TabController tabController;
+  int currentIndex = 0;
 
   @override
   void initState() {
@@ -25,6 +28,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     tabController.dispose();
+    homeProductBloc.dispose();
     super.dispose();
   }
 
@@ -40,17 +44,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             return _error('No Connection made');
             break;
           case ConnectionState.waiting:
-          case ConnectionState.active:
             return _loading();
             break;
           case ConnectionState.done:
+          case ConnectionState.active:
             if (snapShot.hasError) {
               return _error(snapShot.error.toString());
             } else {
               if (!snapShot.hasData) {
                 return _error("No data founded");
               } else {
-                return _screen(snapShot.data);
+                this.categoryList = snapShot.data;
+                homeProductBloc.categoryIDSink
+                    .add(this.categoryList[0].category_id);
+                return _screen(categoryList);
               }
             }
             break;
@@ -87,9 +94,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           controller: tabController,
           isScrollable: true,
           tabs: _tabs(categories),
+          onTap: (int index) {
+            homeProductBloc.categoryIDSink.add(categoryList[index].category_id);
+          },
         ),
       ),
-      body: Container(),
+      body: Container(
+        child: StreamBuilder(
+          stream: homeProductBloc.productsStream,
+          builder:
+              (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return _error("noting working");
+                break;
+              case ConnectionState.waiting:
+              case ConnectionState.active:
+                return _loading();
+                break;
+              case ConnectionState.done:
+                if (snapshot.hasError) {
+                  return _error(snapshot.error.toString());
+                } else {
+                  if (!snapshot.hasData) {
+                    return _error("no data return");
+                  } else {
+                    return _drawProducts(snapshot.data);
+                  }
+                }
+                break;
+            }
+            return Container();
+          },
+        ),
+      ),
     );
   }
 }
@@ -102,6 +140,13 @@ List<Tab> _tabs(List<ProductCategory> categories) {
     ));
   }
   return tabsList;
+}
+
+Widget _drawProducts(List<Product> product) {
+  return Container(
+      child: Center(
+    child: Text('Product'),
+  ));
 }
 
 _loading() {
