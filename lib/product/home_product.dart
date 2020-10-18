@@ -23,18 +23,17 @@ class HomeProductBloc implements Disposable {
   int categoryID;
 
   HomeProductBloc() {
+    // this.categoryID = categoryID;
+    this.productList = [];
     helperAPi = HelperAPi();
-    this.categoryID = categoryID;
-    productList = [];
-    _productController.add(productList);
+    _productController.add(this.productList);
     _categoryController.add(this.categoryID);
     _categoryController.stream.listen(fetchCategoryFromAPi);
   }
 
   Future<void> fetchCategoryFromAPi(int categoryId) async {
-this.productList =  await helperAPi.fetchProductsByCategory(categoryId, 1);
-_productController.add(this.productList);
-
+    this.productList = await helperAPi.fetchProductsByCategory(categoryId, 1);
+    _productController.add(this.productList);
   }
 
   @override

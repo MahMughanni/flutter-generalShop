@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_generalshop/exceptions/exceptions.dart';
 import 'package:flutter_generalshop/product/product_images.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
@@ -13,7 +14,15 @@ class Product {
   ProductCategory productCategory;
   List<ProductTags> productTags;
   List<String> productImages;
+
   List<ProductReviews> productReviews;
+
+  List images = [
+    'https://image.freepik.com/free-vector/fashion-store-interior-with-counter-mannequins-hangers-showcase-with-dresses-shoes_107791-3001.jpg',
+    'https://image.freepik.com/free-vector/women-buying-clothes-clothing-store-isolated-flat-vector-illustration-cartoon-girls-consumers-choosing-modern-apparel-garment-dress-fashion-shop-style_74855-8696.jpg',
+    'https://image.freepik.com/free-vector/satisfied-clients-checkout-desk-with-purchases_82574-12903.jpg',
+    'https://image.freepik.com/free-vector/online-shopping-concept-landing-page_52683-22153.jpg'
+  ];
 
   Product(
       this.product_id,
@@ -29,10 +38,10 @@ class Product {
       this.productReviews);
 
   Product.fromJson(Map<String, dynamic> jsonObject) {
-
     assert(jsonObject['product_id'] != null, 'Product ID is null ');
     assert(jsonObject['product_title'] != null, 'Product Title is null ');
-    assert(jsonObject['product_description'] != null, 'Product Description is null ');
+    assert(jsonObject['product_description'] != null,
+        'Product Description is null ');
     assert(jsonObject['product_price'] != null, 'Product Price is null ');
 
     if (jsonObject['product_id'] == null) {
@@ -101,5 +110,12 @@ class Product {
         }
       }
     }
+  }
+
+  String featuredImage() {
+    if (this.images.length > 0) {
+      return this.images[0];
+    }
+    return 'https://image.freepik.com/free-vector/online-shopping-concept-landing-page_52683-22153.jpg';
   }
 }

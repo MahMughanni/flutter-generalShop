@@ -35,19 +35,23 @@ class HelperAPi {
 
     Map<String, String> headers = {'Accept': 'application/json'};
     http.Response response = await http.get(url, headers: headers);
+    List<Product> products = [];
+
     switch (response.statusCode) {
       case 404:
+        throw ResourceNotFound('Products');
         break;
       case 302:
       case 301:
       case 303:
         throw RedirectionFound();
         break;
+
       case 200:
-        List<Product> products = [];
-          var body = jsonDecode(response.body);
-          for (var item in body['data']) {
-            products.add(Product.fromJson(item));
+        var body = jsonDecode(response.body);
+        print(body);
+        for (var item in body['data']) {
+          products.add(Product.fromJson(item));
 
           return products;
         }

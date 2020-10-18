@@ -46,8 +46,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           case ConnectionState.waiting:
             return _loading();
             break;
-          case ConnectionState.done:
+
           case ConnectionState.active:
+            _loading();
+            break ;
+          case ConnectionState.done:
             if (snapShot.hasError) {
               return _error(snapShot.error.toString());
             } else {
@@ -57,7 +60,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 this.categoryList = snapShot.data;
                 homeProductBloc.categoryIDSink
                     .add(this.categoryList[0].category_id);
-                return _screen(categoryList);
+                return _screen(snapShot.data);
               }
             }
             break;
@@ -109,10 +112,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 return _error("noting working");
                 break;
               case ConnectionState.waiting:
-              case ConnectionState.active:
                 return _loading();
                 break;
               case ConnectionState.done:
+              case ConnectionState.active:
                 if (snapshot.hasError) {
                   return _error(snapshot.error.toString());
                 } else {
@@ -142,10 +145,25 @@ List<Tab> _tabs(List<ProductCategory> categories) {
   return tabsList;
 }
 
-Widget _drawProducts(List<Product> product) {
+Widget _drawProducts(List<Product> products) {
   return Container(
-      child: Center(
-    child: Text('Product'),
+      child: Column(
+    children: [
+      Flexible(
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: products.length,
+            itemBuilder: (context, position) {
+              return Card(
+                child: Container(
+                  child: Image(
+                    image: NetworkImage(products[position].featuredImage()),
+                  ),
+                ),
+              );
+            }),
+      ),
+    ],
   ));
 }
 
