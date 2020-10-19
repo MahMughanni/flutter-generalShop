@@ -31,11 +31,12 @@ class Product {
       this.productReviews);
 
   Product.fromJson(Map<String, dynamic> jsonObject) {
+
     assert(jsonObject['product_id'] != null, 'Product ID is null ');
     assert(jsonObject['product_title'] != null, 'Product Title is null ');
-    assert(jsonObject['product_description'] != null,
-        'Product Description is null ');
+    assert(jsonObject['product_description'] != null, 'Product Description is null ');
     assert(jsonObject['product_price'] != null, 'Product Price is null ');
+
 
     if (jsonObject['product_id'] == null) {
       throw PropertyIsRequired('Product ID');

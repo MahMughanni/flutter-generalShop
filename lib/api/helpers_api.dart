@@ -12,56 +12,7 @@ import 'package:http/http.dart' as http;
 class HelperAPi {
   Map<String, String> headers = {'Accept': 'application/json'};
 
-  Future<List<Product>> fetchProducts(int page) async {
-    await checkInternet();
-    Map<String, String> headers = {'Accept': 'application/json'};
-    String url = APiUtl.PRODUCTS + '?page=' + page.toString();
-    http.Response response = await http.get(url, headers: headers);
-    List<Product> products = [];
-    if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      for (var item in body['data']) {
-        products.add(Product.fromJson(item));
-      }
-      return products;
-    }
-    return null;
-  }
 
-  Future<List<Product>> fetchProductsByCategory(
-      int categoryId, int page) async {
-    await checkInternet();
-    String url = APiUtl.CATEGORY_PRODUCTS(categoryId, page);
-
-    Map<String, String> headers = {'Accept': 'application/json'};
-    http.Response response = await http.get(url, headers: headers);
-
-    switch (response.statusCode) {
-      case 404:
-        throw ResourceNotFound('Products');
-        break;
-      case 302:
-      case 301:
-      case 303:
-        throw RedirectionFound();
-        break;
-      case 200:
-        List<Product> productsList = [];
-        var body = jsonDecode(response.body);
-        for (var item in body['data']) {
-          productsList.add(Product.fromJson(item));
-          print(Product.fromJson(item));
-        }
-        return productsList;
-
-        break;
-
-      default:
-        return null;
-
-        break;
-    }
-  }
 
   Future<List<ProductCategory>> fetchCategories() async {
     await checkInternet();

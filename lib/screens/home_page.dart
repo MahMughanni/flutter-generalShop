@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   ScreenConfig screenConfig;
   HelperAPi helperAPi = HelperAPi();
   HomeProductBloc homeProductBloc = HomeProductBloc();
-  List<ProductCategory> categoryList;
+  List<ProductCategory> productsCategoriesList;
   PageController _pageController;
   WidgetSize widgetSize;
   DotsStream dotsStream = DotsStream();
@@ -30,8 +30,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    super.initState();
     _pageController = PageController(initialPage: 1, viewportFraction: 0.78);
+    super.initState();
   }
 
   @override
@@ -53,23 +53,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           case ConnectionState.none:
             return _error('No Connection made');
             break;
-          case ConnectionState.waiting:
-            return _loading();
-            break;
 
+          case ConnectionState.waiting:
           case ConnectionState.active:
             _loading();
+
             break;
           case ConnectionState.done:
             if (snapShot.hasError) {
               return _error(snapShot.error.toString());
             } else {
               if (!snapShot.hasData) {
-                return _error("No data founded");
+                return _error(" No data found");
               } else {
-                this.categoryList = snapShot.data;
-                homeProductBloc.fetchProducts
-                    .add(this.categoryList[0].category_id);
+                this.productsCategoriesList = snapShot.data;
+                homeProductBloc.fetchProducts.add(this.productsCategoriesList[0].category_id);
                 return _screen(snapShot.data, context);
               }
             }
@@ -81,12 +79,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _screen(List<ProductCategory> categories, BuildContext context) {
-    tabController = TabController(
-      initialIndex: 0,
-      vsync: this,
-      length: categories.length,
-    );
-
+    tabController =
+        TabController(initialIndex: 0, vsync: this, length: categories.length);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -109,7 +103,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           indicatorWeight: 3,
           tabs: _tabs(categories),
           onTap: (int index) {
-            homeProductBloc.fetchProducts.add(categoryList[index].category_id);
+            homeProductBloc.fetchProducts.add(this.productsCategoriesList[index].category_id);
           },
         ),
       ),
@@ -120,66 +114,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return _error("noting working");
-
+                return _error("noting is working");
+                break;
               case ConnectionState.waiting:
-                print(snapshot.connectionState);
                 return _loading();
                 break;
-
               case ConnectionState.done:
               case ConnectionState.active:
-                print(snapshot.connectionState);
+
                 if (snapshot.hasError) {
                   return _error(snapshot.error.toString());
                 } else {
                   if (!snapshot.hasData) {
-                    return _error("No Data Return");
+                    return _error('no Data ');
                   } else {
-                    return _drawProducts(snapshot.data, context);
+                    return _drawTestWidget(snapshot.data);
                   }
                 }
                 break;
             }
-            return Container();
+            return Container(
+              color: Colors.indigoAccent,
+              child: Text(
+                'DOne ',
+                style: TextStyle(fontSize: 40),
+              ),
+            );
           },
         ),
       ),
     );
   }
 
-  List<Tab> _tabs(List<ProductCategory> categories) {
-    List<Tab> tabsList = [];
-    for (ProductCategory category in categories) {
-      tabsList.add(Tab(
-        text: category.category_name,
-      ));
-    }
-    return tabsList;
+
+
+  Widget _drawTestWidget(List<Product> products) {
+    return Container(
+      child: Center(
+        child: Text('Products'),
+      ),
+    );
   }
 
-//return just 5 products
-  List<Product> _randomTopProducts(List<Product> products) {
-    List<int> indexes = [];
-    Random random = Random();
-    int counter = 5;
-    List<Product> newProducts = [];
-    do {
-      int rnd = random.nextInt(products.length);
-      if (!indexes.contains(rnd)) {
-        indexes.add(rnd);
-      }
-      counter--;
-    } while (counter != 0);
 
-    for (int index in indexes) {
-      newProducts.add(products[index]);
-    }
-    return newProducts;
-  }
+
+
 
   Widget _drawProducts(List<Product> products, BuildContext context) {
-    List<Product> topProducts = _randomTopProducts(products);
+    // List<Product> topProducts = _randomTopProducts(products);
     return Container(
       child: Column(
         children: [
@@ -202,23 +184,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: Container(
                         child: Image(
                           fit: BoxFit.cover,
-                          image: NetworkImage(
-                              topProducts[position].featuredImage()),
+                          image:
+                              NetworkImage(products[position].featuredImage()),
                         ),
                       ),
                     );
                   }),
             ),
           ),
-          Container(
-              child: StreamBuilder<int>(
-            stream: dotsStream.dots,
-            builder: (context, snapShot) {
-              return Row(
-                children: _drawDots(topProducts.length, context),
-              );
-            },
-          )),
+          // Container(
+          //     child: StreamBuilder<int>(
+          //   stream: dotsStream.dots,
+          //   builder: (context, snapShot) {
+          //     return Row(
+          //       children: _drawDots(topProducts.length, context),
+          //     );
+          //   },
+          // )),
         ],
       ),
     );
@@ -244,6 +226,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     return widgets;
   }
+}
+
+
+//return just 5 products
+List<Product> _randomTopProducts(List<Product> products) {
+  List<int> indexes = [];
+  Random random = Random();
+  int counter = 5;
+  List<Product> newProducts = [];
+  do {
+    int rnd = random.nextInt(products.length);
+    if (!indexes.contains(rnd)) {
+      indexes.add(rnd);
+    }
+    // counter--;
+  } while (counter != 0);
+
+  for (int index in indexes) {
+    newProducts.add(products[index]);
+  }
+  return newProducts;
+}
+
+
+List<Tab> _tabs(List<ProductCategory> categories) {
+  List<Tab> tabsList = [];
+  for (ProductCategory category in categories) {
+    tabsList.add(Tab(
+      text: category.category_name,
+    ));
+  }
+  return tabsList;
 }
 
 _loading() {
