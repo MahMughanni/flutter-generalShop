@@ -1,12 +1,10 @@
 import 'dart:async';
-
-import 'package:flutter_generalshop/api/helpers_api.dart';
 import 'package:flutter_generalshop/api/products_api.dart';
 import 'package:flutter_generalshop/contracts/contracts.dart';
 import 'package:flutter_generalshop/product/product.dart';
 
 class HomeProductBloc implements Disposable {
-  List<Product> products;
+  List<Product> productList;
   ProductsAPI productsAPI;
 
   int categoryID;
@@ -24,19 +22,17 @@ class HomeProductBloc implements Disposable {
   Stream<int> get categoryStream => _categoryController.stream;
 
   HomeProductBloc() {
-    this.products = [];
+    this.productList = [];
     productsAPI = ProductsAPI();
-    _productController.add(this.products);
+    _productController.add(this.productList);
     _categoryController.add(this.categoryID);
     _categoryController.stream.listen(_fetchCategoryFromAPi);
   }
 
   Future<void> _fetchCategoryFromAPi(int categoryId) async {
-    this.products = await productsAPI.fetchProductsByCategory(categoryId, 1);
-    print(categoryId);
-    // _productController.add(this.products);
-    print(products.length);
-    // _productController.add(this.products);
+    this.productList = await productsAPI.fetchProductsByCategory(categoryId, 1);
+    _productController.add(this.productList);
+
   }
 
   @override

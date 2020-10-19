@@ -15,8 +15,6 @@ class Product {
 
   List<ProductReviews> productReviews;
 
-
-
   Product(
       this.product_id,
       this.product_title,
@@ -31,12 +29,11 @@ class Product {
       this.productReviews);
 
   Product.fromJson(Map<String, dynamic> jsonObject) {
-
     assert(jsonObject['product_id'] != null, 'Product ID is null ');
     assert(jsonObject['product_title'] != null, 'Product Title is null ');
-    assert(jsonObject['product_description'] != null, 'Product Description is null ');
+    assert(jsonObject['product_description'] != null,
+        'Product Description is null ');
     assert(jsonObject['product_price'] != null, 'Product Price is null ');
-
 
     if (jsonObject['product_id'] == null) {
       throw PropertyIsRequired('Product ID');
@@ -58,7 +55,8 @@ class Product {
     this.product_total = double.tryParse(jsonObject['product_total']);
     this.product_price = double.tryParse(jsonObject['product_price']);
     this.product_discount = double.tryParse(jsonObject['product_discount']);
-    this.productCategory = ProductCategory.fromJson(jsonObject['product_category']);
+    this.productCategory =
+        ProductCategory.fromJson(jsonObject['product_category']);
     _setTags(jsonObject['product_tags']);
 
     productImages = [];
@@ -70,7 +68,6 @@ class Product {
     if (jsonObject['product_reviews'] != null) {
       _setReview(jsonObject['product_reviews']);
     }
-
   }
 
   void _setTags(List<dynamic> tagsJson) {

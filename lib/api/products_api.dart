@@ -5,9 +5,7 @@ import 'package:flutter_generalshop/exceptions/exceptions.dart';
 import 'package:flutter_generalshop/product/product.dart';
 import 'package:http/http.dart' as http;
 
-
 class ProductsAPI {
-
   Future<List<Product>> fetchProducts(int page) async {
     await checkInternet();
     Map<String, String> headers = {'Accept': 'application/json'};
@@ -24,35 +22,36 @@ class ProductsAPI {
     return null;
   }
 
-
-
-  Future<List<Product>> fetchProductsByCategory(int categoryId, int page) async {
+  Future<List<Product>> fetchProductsByCategory(
+      int categoryId, int page) async {
     await checkInternet();
     String url = APiUtl.CATEGORY_PRODUCTS(categoryId, page);
 
     Map<String, String> headers = {'Accept': 'application/json'};
     http.Response response = await http.get(url, headers: headers);
-    List<Product> productsList = [];
     switch (response.statusCode) {
       case 404:
-        throw ResourceNotFound('Products');
         break;
-      case 301:
       case 302:
+      case 301:
       case 303:
         throw RedirectionFound();
         break;
       case 200:
+        List<Product> products = [];
         var body = jsonDecode(response.body);
         for (var item in body['data']) {
-          productsList.add(Product.fromJson(item));
+          print(item);
+
+          products.add(Product.fromJson(item));
+
+          return products;
         }
-        return productsList;
         break;
+
       default:
         return null;
         break;
     }
   }
-
 }
