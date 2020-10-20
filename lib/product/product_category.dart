@@ -6,6 +6,7 @@ class ProductCategory {
   String image_direction;
   String image_url;
 
+
   ProductCategory(this.category_id, this.category_name, this.image_direction,
       this.image_url);
 
@@ -28,6 +29,7 @@ class ProductCategory {
     if ( jsonObject['image_url'] == null) {
       throw PropertyIsRequired('Image Url ');
     }
+
     this.category_id = jsonObject['category_id'];
     this.category_name = jsonObject['category_name'];
     this.image_direction = jsonObject['image_direction'];

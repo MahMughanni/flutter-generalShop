@@ -41,12 +41,11 @@ class ProductsAPI {
         List<Product> products = [];
         var body = jsonDecode(response.body);
         for (var item in body['data']) {
-          print(item);
-
           products.add(Product.fromJson(item));
-
-          return products;
         }
+        return products;
+
+
         break;
 
       default:

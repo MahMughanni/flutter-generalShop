@@ -55,8 +55,9 @@ class Product {
     this.product_total = double.tryParse(jsonObject['product_total']);
     this.product_price = double.tryParse(jsonObject['product_price']);
     this.product_discount = double.tryParse(jsonObject['product_discount']);
-    this.productCategory =
-        ProductCategory.fromJson(jsonObject['product_category']);
+    this.productCategory = ProductCategory.fromJson(jsonObject['product_category']);
+
+
     _setTags(jsonObject['product_tags']);
 
     productImages = [];
@@ -82,7 +83,6 @@ class Product {
   }
 
   void _setReview(List<dynamic> reviewsJson) {
-    productReviews = [];
     if (reviewsJson.length > 0) {
       for (var item in reviewsJson) {
         if (item != null) {
@@ -93,7 +93,6 @@ class Product {
   }
 
   void _setImages(List<dynamic> jsonImages) {
-    productImages = [];
     if (jsonImages.length > 0) {
       for (var item in jsonImages) {
         if (item != null) {
@@ -107,6 +106,6 @@ class Product {
     if (this.productImages.length > 0) {
       return this.productImages[0];
     }
-    return 'https://image.freepik.com/free-vector/online-shopping-concept-landing-page_52683-22153.jpg';
+    return 'https://image.freepik.com/free-vector/never-give-up-motivation-concept-black-white-illustration_18840-71.jpg';
   }
 }

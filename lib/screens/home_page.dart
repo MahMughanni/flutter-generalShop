@@ -67,7 +67,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 return _error(" No data found");
               } else {
                 this.productsCategoriesList = snapShot.data;
-                homeProductBloc.fetchProducts.add(this.productsCategoriesList[0].category_id);
+                homeProductBloc.fetchProducts
+                    .add(this.productsCategoriesList[0].category_id);
                 return _screen(snapShot.data, context);
               }
             }
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _screen(List<ProductCategory> categories, BuildContext context) {
+  Widget _screen(List<ProductCategory> categories ,BuildContext contextBuild) {
     tabController =
         TabController(initialIndex: 0, vsync: this, length: categories.length);
     return Scaffold(
@@ -103,7 +104,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           indicatorWeight: 3,
           tabs: _tabs(categories),
           onTap: (int index) {
-            homeProductBloc.fetchProducts.add(this.productsCategoriesList[index].category_id);
+            homeProductBloc.fetchProducts
+                .add(this.productsCategoriesList[index].category_id);
           },
         ),
       ),
@@ -121,14 +123,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 break;
               case ConnectionState.done:
               case ConnectionState.active:
-
                 if (snapshot.hasError) {
                   return _error(snapshot.error.toString());
                 } else {
                   if (!snapshot.hasData) {
                     return _error('no Data ');
                   } else {
-                    return _drawTestWidget(snapshot.data);
+                    return _drawProducts(snapshot.data, contextBuild);
                   }
                 }
                 break;
@@ -147,20 +148,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
 
-
-  Widget _drawTestWidget(List<Product> products) {
-    return Container(
-      child: Center(
-        child: Text('Products'),
-      ),
-    );
-  }
-
-
-
-
-
-  Widget _drawProducts(List<Product> products, BuildContext context) {
+  Widget _drawProducts(List<Product>  products , BuildContext context  ) {
     // List<Product> topProducts = _randomTopProducts(products);
     return Container(
       child: Column(
@@ -170,28 +158,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               height: MediaQuery.of(context).size.height * 0.25,
               child: PageView.builder(
                   onPageChanged: (int index) {
-                    dotsStream.dotsSink.add(index);
+                    // dotsStream.dotsSink.add(index);
                   },
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
                   itemCount: products.length,
-                  itemBuilder: (context, position) {
+                  itemBuilder: (BuildContext context, int position) {
                     return Card(
                       margin: EdgeInsets.only(right: 4, left: 4),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(9)),
                       clipBehavior: Clip.hardEdge,
                       child: Container(
-                        child: Image(
-                          fit: BoxFit.cover,
-                          image:
-                              NetworkImage(products[position].featuredImage()),
+                        child:
+
+                        Image(
+
+                          fit: BoxFit.cover, image: NetworkImage(products[position].featuredImage()),
                         ),
                       ),
                     );
                   }),
             ),
           ),
+
           // Container(
           //     child: StreamBuilder<int>(
           //   stream: dotsStream.dots,
@@ -228,7 +218,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 }
 
-
 //return just 5 products
 List<Product> _randomTopProducts(List<Product> products) {
   List<int> indexes = [];
@@ -248,7 +237,6 @@ List<Product> _randomTopProducts(List<Product> products) {
   }
   return newProducts;
 }
-
 
 List<Tab> _tabs(List<ProductCategory> categories) {
   List<Tab> tabsList = [];
