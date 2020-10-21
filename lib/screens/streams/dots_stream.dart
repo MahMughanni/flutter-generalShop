@@ -17,8 +17,8 @@ class DotsStream implements Disposable {
     _dotsStreamController.stream.listen(_indexChange);
   }
 
-  void _indexChange(int index) {
-    currentDot = index;
+  void _indexChange(int newIndex) {
+    currentDot = newIndex;
     _dotsStreamController.add(currentDot);
   }
 

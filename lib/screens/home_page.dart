@@ -6,7 +6,7 @@ import 'package:flutter_generalshop/api/helpers_api.dart';
 import 'package:flutter_generalshop/product/home_product.dart';
 import 'package:flutter_generalshop/product/product.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
-import 'package:flutter_generalshop/screens/streams/dots_stream.dart';
+import 'package:flutter_generalshop/screens/single_product.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:flutter_generalshop/screens/utilities/size_config.dart';
 
@@ -22,11 +22,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<ProductCategory> productsCategoriesList;
   PageController _pageController;
   WidgetSize widgetSize;
-  DotsStream dotsStream = DotsStream();
 
   TabController tabController;
   int currentIndex = 0;
-  int dotsCurrentIndex = 1;
+
+  ValueNotifier dotsIndex = ValueNotifier(1);
 
   @override
   void initState() {
@@ -38,7 +38,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void dispose() {
     tabController.dispose();
     homeProductBloc.dispose();
-    dotsStream.dispose();
     super.dispose();
   }
 
@@ -79,7 +78,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _screen(List<ProductCategory> categories ,BuildContext contextBuild) {
+  Widget _screen(List<ProductCategory> categories, BuildContext contextBuild) {
     tabController =
         TabController(initialIndex: 0, vsync: this, length: categories.length);
     return Scaffold(
@@ -137,7 +136,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             return Container(
               color: Colors.indigoAccent,
               child: Text(
-                'DOne ',
+                'Done ',
                 style: TextStyle(fontSize: 40),
               ),
             );
@@ -147,67 +146,128 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-
-  Widget _drawProducts(List<Product>  products , BuildContext context  ) {
-    // List<Product> topProducts = _randomTopProducts(products);
+  Widget _drawProducts(List<Product> products, BuildContext productsContext) {
+    List<Product> topProducts = _randomTopProducts(products);
     return Container(
-      child: Column(
-        children: [
-          Flexible(
-            child: SizedBox(
+      child: Padding(
+        padding: EdgeInsets.only(top: 24.0),
+        child: Column(
+          children: [
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.25,
               child: PageView.builder(
-                  onPageChanged: (int index) {
-                    // dotsStream.dotsSink.add(index);
-                  },
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
-                  itemCount: products.length,
+                  itemCount: topProducts.length,
+                  onPageChanged: (int index) {
+                    dotsIndex.value = index;
+                  },
                   itemBuilder: (BuildContext context, int position) {
-                    return Card(
-                      margin: EdgeInsets.only(right: 4, left: 4),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9)),
-                      clipBehavior: Clip.hardEdge,
-                      child: Container(
-                        child:
-
-                        Image(
-
-                          fit: BoxFit.cover, image: NetworkImage(products[position].featuredImage()),
+                    return InkWell(
+                      onTap: () {
+                        _goToSingleProduct(topProducts[position], context);
+                      },
+                      child: Card(
+                        margin: EdgeInsets.only(right: 4, left: 4),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: Container(
+                          child: Image(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                                topProducts[position].featuredImage()),
+                          ),
                         ),
                       ),
                     );
                   }),
             ),
-          ),
-
-          // Container(
-          //     child: StreamBuilder<int>(
-          //   stream: dotsStream.dots,
-          //   builder: (context, snapShot) {
-          //     return Row(
-          //       children: _drawDots(topProducts.length, context),
-          //     );
-          //   },
-          // )),
-        ],
+            ValueListenableBuilder(
+              valueListenable: dotsIndex,
+              builder: (context, value, _) {
+                return Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _drawDots(topProducts.length, value),
+                    ),
+                  ),
+                );
+              },
+            ),
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(top: 26, left: 8, right: 8),
+                child: GridView.builder(
+                    itemCount: products.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: .55),
+                    itemBuilder: (context, int position) {
+                      return InkWell(
+                        onTap: () {
+                          _goToSingleProduct(products[position], context);
+                        },
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 180,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    shape: BoxShape.rectangle),
+                                child: Image(
+                                  image: NetworkImage(
+                                      products[position].featuredImage()),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                products[position].product_title,
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.headline,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                "\$ ${products[position].product_price.toString()}",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.subhead,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
-  List<Widget> _drawDots(int qty, BuildContext context) {
+  List<Widget> _drawDots(int qty, int index) {
     List<Widget> widgets = [];
     for (int i = 0; i < qty; i++) {
       widgets.add(Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
-          color: (i == dotsCurrentIndex)
+          color: (i == index)
               ? ScreenUtilities.mainBlue
               : ScreenUtilities.lightGray,
         ),
-        width: widgetSize.pagerDotsWidth,
-        height: widgetSize.pagerDotsHeight,
+        width: 7,
+        height: 7,
         margin: (i == qty - 1)
             ? EdgeInsets.only(right: 0)
             : EdgeInsets.only(right: 20),
@@ -216,54 +276,60 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     return widgets;
   }
-}
 
 //return just 5 products
-List<Product> _randomTopProducts(List<Product> products) {
-  List<int> indexes = [];
-  Random random = Random();
-  int counter = 5;
-  List<Product> newProducts = [];
-  do {
-    int rnd = random.nextInt(products.length);
-    if (!indexes.contains(rnd)) {
-      indexes.add(rnd);
+  List<Product> _randomTopProducts(List<Product> products) {
+    List<int> indexes = [];
+    Random random = Random();
+    int counter = 5;
+    List<Product> newProducts = [];
+    do {
+      int rnd = random.nextInt(products.length);
+      if (!indexes.contains(rnd)) {
+        indexes.add(rnd);
+      }
+      counter--;
+    } while (counter != 0);
+
+    for (int index in indexes) {
+      newProducts.add(products[index]);
     }
-    // counter--;
-  } while (counter != 0);
-
-  for (int index in indexes) {
-    newProducts.add(products[index]);
+    return newProducts;
   }
-  return newProducts;
-}
 
-List<Tab> _tabs(List<ProductCategory> categories) {
-  List<Tab> tabsList = [];
-  for (ProductCategory category in categories) {
-    tabsList.add(Tab(
-      text: category.category_name,
-    ));
+  List<Tab> _tabs(List<ProductCategory> categories) {
+    List<Tab> tabsList = [];
+    for (ProductCategory category in categories) {
+      tabsList.add(Tab(
+        text: category.category_name,
+      ));
+    }
+    return tabsList;
   }
-  return tabsList;
-}
 
-_loading() {
-  return Container(
-    child: Center(
-      child: CircularProgressIndicator(
-        valueColor: new AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
-        backgroundColor: Colors.deepPurple,
-        strokeWidth: 1.3,
+  _loading() {
+    return Container(
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+          backgroundColor: Colors.deepPurple,
+          strokeWidth: 1.3,
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-_error(String error) {
-  return Container(
-    child: Center(
-      child: Text(error),
-    ),
-  );
+  _error(String error) {
+    return Container(
+      child: Center(
+        child: Text(error),
+      ),
+    );
+  }
+
+  void _goToSingleProduct(Product product, BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return SingleProduct(product);
+    }));
+  }
 }

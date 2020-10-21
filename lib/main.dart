@@ -5,6 +5,7 @@ import 'package:flutter_generalshop/screens/home_page.dart';
 import 'package:flutter_generalshop/screens/onboarding/onbording.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 void main() async {
   //fixed accessed before the binding was initialized .
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +18,10 @@ void main() async {
   }
   runApp(GeneralShop(homePage));
 }
+
 class GeneralShop extends StatelessWidget {
   final Widget homePage;
+
   GeneralShop(this.homePage);
 
   @override
@@ -32,6 +35,18 @@ class GeneralShop extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         primaryIconTheme: IconThemeData(
           color: Colors.grey.shade900,
+        ),
+        textTheme: TextTheme(
+          headline: TextStyle(
+              color: ScreenUtilities.appBarTitle,
+              fontFamily: "Quicksand",
+              fontWeight: FontWeight.w700,
+              fontSize: 16),
+          subhead: TextStyle(
+              color: ScreenUtilities.appBarTitle,
+              fontFamily: "Quicksand",
+              fontWeight: FontWeight.w700,
+              fontSize: 14),
         ),
         appBarTheme: AppBarTheme(
           elevation: 0,
@@ -54,7 +69,6 @@ class GeneralShop extends StatelessWidget {
             indicatorSize: TabBarIndicatorSize.label,
             unselectedLabelColor: ScreenUtilities.unselected),
         indicatorColor: ScreenUtilities.mainBlue,
-
       ),
     );
   }
