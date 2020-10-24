@@ -14,12 +14,11 @@ class OnBoarding extends StatefulWidget {
 class _OnBoardingState extends State<OnBoarding> {
   PageController _pageController;
   int currentIndex = 0;
-  double screenHeight;
   bool lastPage = false;
+
+  double screenHeight;
   ScreenConfig screenConfig;
-
   WidgetSize widgetSize;
-
   double screenWidth;
 
   List<OnBoardingModel> boardingList = [
@@ -124,9 +123,8 @@ class _OnBoardingState extends State<OnBoarding> {
             onPressed: () async {
               var pref = await SharedPreferences.getInstance();
               pref.setBool('is_seen', true);
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HomePage())
-              );
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
             },
             child: Text(
               'Get start',

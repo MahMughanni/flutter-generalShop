@@ -42,12 +42,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contextMain) {
     screenConfig = ScreenConfig(context);
     return FutureBuilder(
       future: helperAPi.fetchCategories(),
-      builder: (BuildContext context,
-          AsyncSnapshot<List<ProductCategory>> snapShot) {
+      builder: (contextMain, AsyncSnapshot<List<ProductCategory>> snapShot) {
         switch (snapShot.connectionState) {
           case ConnectionState.none:
             return _error('No Connection made');
@@ -68,7 +67,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 this.productsCategoriesList = snapShot.data;
                 homeProductBloc.fetchProducts
                     .add(this.productsCategoriesList[0].category_id);
-                return _screen(snapShot.data, context);
+                return _screen(snapShot.data, contextMain);
               }
             }
             break;
@@ -78,7 +77,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _screen(List<ProductCategory> categories, BuildContext contextBuild) {
+  Widget _screen(List<ProductCategory> categories, BuildContext contextScreen) {
     tabController =
         TabController(initialIndex: 0, vsync: this, length: categories.length);
     return Scaffold(
@@ -111,8 +110,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       body: Container(
         child: StreamBuilder(
           stream: homeProductBloc.productsStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<Product>> snapshot) {
+          builder: (contextScreen, AsyncSnapshot<List<Product>> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
                 return _error("noting is working");
@@ -128,7 +126,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   if (!snapshot.hasData) {
                     return _error('no Data ');
                   } else {
-                    return _drawProducts(snapshot.data, contextBuild);
+                    return _drawProducts(snapshot.data, contextScreen);
                   }
                 }
                 break;
@@ -154,7 +152,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.25,
+              height: MediaQuery.of(productsContext).size.height * 0.25,
               child: PageView.builder(
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
@@ -162,10 +160,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   onPageChanged: (int index) {
                     dotsIndex.value = index;
                   },
-                  itemBuilder: (BuildContext context, int position) {
+                  itemBuilder: (productsContext, int position) {
                     return InkWell(
                       onTap: () {
-                        _goToSingleProduct(topProducts[position], context);
+                        _goToSingleProduct(
+                            topProducts[position], productsContext);
                       },
                       child: Card(
                         margin: EdgeInsets.only(right: 4, left: 4),
@@ -175,6 +174,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         clipBehavior: Clip.hardEdge,
                         child: Container(
                           child: Image(
+                            loadingBuilder: (context, image,
+                                ImageChunkEvent progressLoading) {
+                              if (progressLoading == null) {
+                                return image;
+                              }
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
                             fit: BoxFit.cover,
                             image: NetworkImage(
                                 topProducts[position].featuredImage()),
@@ -186,7 +194,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             ValueListenableBuilder(
               valueListenable: dotsIndex,
-              builder: (context, value, _) {
+              builder: (productsContext, value, _) {
                 return Container(
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0),
@@ -208,10 +216,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         mainAxisSpacing: 16,
                         crossAxisSpacing: 16,
                         childAspectRatio: .55),
-                    itemBuilder: (context, int position) {
+                    itemBuilder: (productsContext, int position) {
                       return InkWell(
                         onTap: () {
-                          _goToSingleProduct(products[position], context);
+                          _goToSingleProduct(
+                              products[position], productsContext);
                         },
                         child: Column(
                           children: [
@@ -222,6 +231,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     borderRadius: BorderRadius.circular(9),
                                     shape: BoxShape.rectangle),
                                 child: Image(
+                                  loadingBuilder: (context, image,
+                                      ImageChunkEvent progressLoading) {
+                                    if (progressLoading == null) {
+                                      return image;
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
                                   image: NetworkImage(
                                       products[position].featuredImage()),
                                   fit: BoxFit.cover,
@@ -255,81 +273,80 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
+}
 
-  List<Widget> _drawDots(int qty, int index) {
-    List<Widget> widgets = [];
-    for (int i = 0; i < qty; i++) {
-      widgets.add(Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: (i == index)
-              ? ScreenUtilities.mainBlue
-              : ScreenUtilities.lightGray,
-        ),
-        width: 7,
-        height: 7,
-        margin: (i == qty - 1)
-            ? EdgeInsets.only(right: 0)
-            : EdgeInsets.only(right: 20),
-      ));
-    }
-
-    return widgets;
+List<Widget> _drawDots(int qty, int index) {
+  List<Widget> widgets = [];
+  for (int i = 0; i < qty; i++) {
+    widgets.add(Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color:
+            (i == index) ? ScreenUtilities.mainBlue : ScreenUtilities.lightGray,
+      ),
+      width: 7,
+      height: 7,
+      margin: (i == qty - 1)
+          ? EdgeInsets.only(right: 0)
+          : EdgeInsets.only(right: 20),
+    ));
   }
+
+  return widgets;
+}
 
 //return just 5 products
-  List<Product> _randomTopProducts(List<Product> products) {
-    List<int> indexes = [];
-    Random random = Random();
-    int counter = 5;
-    List<Product> newProducts = [];
-    do {
-      int rnd = random.nextInt(products.length);
-      if (!indexes.contains(rnd)) {
-        indexes.add(rnd);
-      }
-      counter--;
-    } while (counter != 0);
-
-    for (int index in indexes) {
-      newProducts.add(products[index]);
+List<Product> _randomTopProducts(List<Product> products) {
+  List<int> indexes = [];
+  Random random = Random();
+  int counter = 5;
+  List<Product> newProducts = [];
+  do {
+    int rnd = random.nextInt(products.length);
+    if (!indexes.contains(rnd)) {
+      indexes.add(rnd);
     }
-    return newProducts;
-  }
+    counter--;
+  } while (counter != 0);
 
-  List<Tab> _tabs(List<ProductCategory> categories) {
-    List<Tab> tabsList = [];
-    for (ProductCategory category in categories) {
-      tabsList.add(Tab(
-        text: category.category_name,
-      ));
-    }
-    return tabsList;
+  for (int index in indexes) {
+    newProducts.add(products[index]);
   }
+  return newProducts;
+}
 
-  _loading() {
-    return Container(
-      child: Center(
-        child: CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
-          backgroundColor: Colors.deepPurple,
-          strokeWidth: 1.3,
-        ),
+List<Tab> _tabs(List<ProductCategory> categories) {
+  List<Tab> tabsList = [];
+  for (ProductCategory category in categories) {
+    tabsList.add(Tab(
+      text: category.category_name,
+    ));
+  }
+  return tabsList;
+}
+
+_loading() {
+  return Container(
+    child: Center(
+      child: CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+        backgroundColor: Colors.deepPurple,
+        strokeWidth: 1.3,
       ),
-    );
-  }
+    ),
+  );
+}
 
-  _error(String error) {
-    return Container(
-      child: Center(
-        child: Text(error),
-      ),
-    );
-  }
+_error(String error) {
+  return Container(
+    child: Center(
+      child: Text(error),
+    ),
+  );
+}
 
-  void _goToSingleProduct(Product product, BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return SingleProduct(product);
-    }));
-  }
+void _goToSingleProduct(Product product, BuildContext context) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return SingleProduct(product);
+  }));
 }

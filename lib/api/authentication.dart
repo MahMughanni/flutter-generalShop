@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_generalshop/customer/user.dart';
 import 'package:flutter_generalshop/exceptions/exceptions.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api_utl.dart';
 
@@ -11,7 +12,6 @@ class Authentication {
 
   Future<User> register(String first_name, String last_name, String email,
       String password) async {
-
     await checkInternet();
 
     Map<String, String> body = {
@@ -56,7 +56,9 @@ class Authentication {
       case 200:
         var body = jsonDecode(response.body);
         var data = body['data'];
-        return User.fromJson(data);
+        User user = User.fromJson(data);
+        await _saveUSer(user.user_id, user.api_token);
+        return user;
         break;
       case 404:
         throw ResourceNotFound('User');
@@ -68,5 +70,11 @@ class Authentication {
         return null;
         break;
     }
+  }
+
+  Future<void> _saveUSer(int userID, String apiToken) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setInt('user_id', userID);
+    sharedPreferences.setString('api_token', apiToken);
   }
 }

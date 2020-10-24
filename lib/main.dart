@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_generalshop/api/products_api.dart';
 import 'package:flutter_generalshop/product/product.dart';
 import 'package:flutter_generalshop/screens/home_page.dart';
+import 'package:flutter_generalshop/screens/login.dart';
 import 'package:flutter_generalshop/screens/onboarding/onbording.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,9 @@ class GeneralShop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/login': (_) => new LogInScreen(),
+      },
       title: 'General Shop',
       home: homePage,
       debugShowCheckedModeBanner: false,
@@ -59,12 +63,14 @@ class GeneralShop extends StatelessWidget {
                 fontSize: 22),
           ),
         ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: ScreenUtilities.mainBlue),
         tabBarTheme: TabBarTheme(
             labelColor: ScreenUtilities.appBarTitle,
             labelStyle: TextStyle(
                 fontFamily: "Quicksand",
                 fontSize: 19,
-                fontWeight: FontWeight.w400),
+                fontWeight: FontWeight.w700),
             labelPadding: EdgeInsets.all(16),
             indicatorSize: TabBarIndicatorSize.label,
             unselectedLabelColor: ScreenUtilities.unselected),
