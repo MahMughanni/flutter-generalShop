@@ -50,7 +50,6 @@ class Authentication {
     Map<String, String> body = {'email': email, 'password': password};
     http.Response response =
         await http.post(APiUtl.AUTH_LOGIN, headers: headers, body: body);
-    print(response.statusCode);
 
     switch (response.statusCode) {
       case 200:

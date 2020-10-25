@@ -49,7 +49,6 @@ class GeneralShop extends StatelessWidget {
           subhead: TextStyle(
               color: ScreenUtilities.appBarTitle,
               fontFamily: "Quicksand",
-              fontWeight: FontWeight.w700,
               fontSize: 14),
         ),
         appBarTheme: AppBarTheme(
@@ -59,8 +58,7 @@ class GeneralShop extends StatelessWidget {
             headline6: TextStyle(
                 color: ScreenUtilities.appBarTitle,
                 fontFamily: "Quicksand",
-                fontWeight: FontWeight.w700,
-                fontSize: 22),
+                fontSize: 17),
           ),
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(

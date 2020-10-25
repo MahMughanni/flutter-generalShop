@@ -32,8 +32,6 @@ class HomeProductBloc implements Disposable {
   Future<void> _fetchCategoryFromAPi(int categoryId ) async {
     this.productList = await productsAPI.fetchProductsByCategory(categoryId, 1);
     _productController.add(this.productList);
-    print(productList[0].productImages);
-    print(productList.length);
   }
 
   @override

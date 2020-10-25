@@ -10,6 +10,8 @@ import 'package:flutter_generalshop/screens/single_product.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:flutter_generalshop/screens/utilities/size_config.dart';
 
+import 'cart_screen.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -81,21 +83,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     tabController =
         TabController(initialIndex: 0, vsync: this, length: categories.length);
     return Scaffold(
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Text(
-            'Home',
-          ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              child: Text('my'),
+              decoration: BoxDecoration(color: Colors.grey.shade100),
+            ),
+            ListTile(
+              title: Text('Cart'),
+              leading: Icon(Icons.shopping_cart),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (contextScreen) => CartScreen()));
+              },
+            )
+          ],
         ),
-        actions: [
-          Padding(
+      ),
+      appBar: AppBar(
+        title: Text(
+          'Home',
+        ),
+
+
+        actions: [Padding(
               padding: const EdgeInsets.only(right: 12.0),
               child: IconButton(
                 icon: Icon(Icons.search),
                 onPressed: () {},
-              ))
-        ],
+              ))],
         bottom: TabBar(
           controller: tabController,
           isScrollable: true,
@@ -107,6 +129,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           },
         ),
       ),
+
+
       body: Container(
         child: StreamBuilder(
           stream: homeProductBloc.productsStream,
@@ -148,7 +172,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     List<Product> topProducts = _randomTopProducts(products);
     return Container(
       child: Padding(
-        padding: EdgeInsets.only(top: 24.0),
+        padding: EdgeInsets.only(top: 20.0),
         child: Column(
           children: [
             SizedBox(
@@ -167,7 +191,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             topProducts[position], productsContext);
                       },
                       child: Card(
-                        margin: EdgeInsets.only(right: 4, left: 4),
+                        margin: EdgeInsets.only(right: 4, left: 4 , bottom: 2, top: 2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(9),
                         ),
@@ -225,7 +249,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         child: Column(
                           children: [
                             SizedBox(
-                              height: 180,
+                              height: 150,
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(9),
@@ -246,16 +270,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                products[position].product_title,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.headline,
-                              ),
+                            Text(
+                              products[position].product_title,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headline,
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 8.0),
+                              padding: EdgeInsets.only(top: 4.0),
                               child: Text(
                                 "\$ ${products[position].product_price.toString()}",
                                 textAlign: TextAlign.center,

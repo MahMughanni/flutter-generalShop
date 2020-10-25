@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_generalshop/api/api_utl.dart';
 import 'package:flutter_generalshop/exceptions/exceptions.dart';
-import 'package:flutter_generalshop/product/product.dart';
 import 'package:flutter_generalshop/utility/City.dart';
 import 'package:flutter_generalshop/utility/Country.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
