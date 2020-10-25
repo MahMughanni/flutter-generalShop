@@ -86,4 +86,46 @@ class CartApi {
         break;
     }
   }
+
+  Future<bool> removeProdcutFromCart (int productID) async{
+    await checkInternet();
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String apiToken = sharedPreferences.get('api_token');
+
+    print(apiToken);
+
+    String url = APiUtl.REMOVE_FROM_CART;
+
+    Map<String, dynamic> body = {
+      'product_id': productID.toString(),
+    };
+
+    Map<String, String> authHeaders = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $apiToken' ,
+    };
+
+    http.Response response =
+    await http.post(url, headers: authHeaders, body: body);
+    print(response.statusCode);
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return true;
+        break;
+      case 404:
+        throw ResourceNotFound('Cart');
+        break;
+      case 401:
+        throw ResourceNotFound('token');
+        break;
+      case 422:
+        throw UnProcessEntity();
+        break;
+      default:
+        return null;
+        break;
+    }
+
+  }
 }
