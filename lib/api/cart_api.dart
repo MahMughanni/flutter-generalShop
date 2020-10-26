@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_generalshop/cart/cart.dart';
 import 'package:flutter_generalshop/exceptions/exceptions.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api_utl.dart';
 
-class CartApi {
+class CartApi with ChangeNotifier {
   Map<String, String> headers = {'Accept': 'application/json'};
 
   Future<Cart> fetchCart() async {
@@ -21,7 +23,7 @@ class CartApi {
 
     Map<String, String> authHeaders = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $apiToken' ,
+      'Authorization': 'Bearer $apiToken',
     };
 
     http.Response response = await http.get(url, headers: authHeaders);
@@ -61,7 +63,7 @@ class CartApi {
 
     Map<String, String> authHeaders = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $apiToken' ,
+      'Authorization': 'Bearer $apiToken',
     };
 
     http.Response response =
@@ -70,6 +72,7 @@ class CartApi {
     switch (response.statusCode) {
       case 200:
       case 201:
+        notifyListeners();
         return true;
         break;
       case 404:
@@ -87,14 +90,13 @@ class CartApi {
     }
   }
 
-  Future<bool> removeProdcutFromCart (int productID) async{
+  Future<bool> removeProductFromCart(int productID) async {
     await checkInternet();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String apiToken = sharedPreferences.get('api_token');
 
-    print(apiToken);
-
-    String url = APiUtl.REMOVE_FROM_CART;
+    String url =
+        APiUtl.REMOVE_FROM_CART + '/' + productID.toString() + '/remove';
 
     Map<String, dynamic> body = {
       'product_id': productID.toString(),
@@ -102,12 +104,12 @@ class CartApi {
 
     Map<String, String> authHeaders = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $apiToken' ,
+      'Authorization': 'Bearer $apiToken',
     };
 
     http.Response response =
-    await http.post(url, headers: authHeaders, body: body);
-    print(response.statusCode);
+        await http.post(url, headers: authHeaders, body: body);
+    print(response.body);
     switch (response.statusCode) {
       case 200:
       case 201:
@@ -115,7 +117,7 @@ class CartApi {
         break;
       case 404:
         throw ResourceNotFound('Cart');
-        break;
+        break; 
       case 401:
         throw ResourceNotFound('token');
         break;
@@ -126,6 +128,7 @@ class CartApi {
         return null;
         break;
     }
-
   }
+
+
 }

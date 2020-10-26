@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_generalshop/api/cart_api.dart';
 import 'package:flutter_generalshop/api/products_api.dart';
+import 'package:flutter_generalshop/cart/cart.dart';
 import 'package:flutter_generalshop/product/product.dart';
 import 'package:flutter_generalshop/screens/home_page.dart';
 import 'package:flutter_generalshop/screens/login.dart';
 import 'package:flutter_generalshop/screens/onboarding/onbording.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -17,7 +20,13 @@ void main() async {
   if (isSeen == null || !isSeen) {
     homePage = OnBoarding();
   }
-  runApp(GeneralShop(homePage));
+  runApp(MultiProvider(
+  providers: [
+    ChangeNotifierProvider(create: (_)=>CartApi()
+    ) ,
+    Provider(create: (_)=>CartItem(),)
+  ]
+  , child: GeneralShop(homePage)));
 }
 
 class GeneralShop extends StatelessWidget {

@@ -18,8 +18,10 @@ class _SingleProductState extends State<SingleProduct> {
   CartApi cartApi = CartApi();
   bool _addToCart = false;
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.product.product_title),

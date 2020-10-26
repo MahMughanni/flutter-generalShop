@@ -1,11 +1,12 @@
 import 'package:flutter_generalshop/product/product.dart';
 
-class Cart {
+class Cart  {
   List<CartItem> cartItems;
   double total;
   int id;
+  Product product;
 
-  Cart(this.cartItems, this.total, this.id);
+  Cart({this.cartItems, this.total, this.id, this.product});
 
   Cart.fromJson(Map<String, dynamic> jsonObject) {
     this.total = jsonObject['total'];
@@ -19,15 +20,16 @@ class Cart {
   }
 }
 
-class CartItem {
+class CartItem  {
   Product product;
 
   double qty;
 
-  CartItem(this.product, this.qty);
+  CartItem({this.product, this.qty});
 
   CartItem.fromJson(Map<String, dynamic> jsonObject) {
     this.product = Product.fromJson(jsonObject['product']);
     this.qty = double.tryParse(jsonObject['qty']);
   }
+
 }

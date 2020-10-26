@@ -6,6 +6,7 @@ import 'package:flutter_generalshop/api/helpers_api.dart';
 import 'package:flutter_generalshop/product/home_product.dart';
 import 'package:flutter_generalshop/product/product.dart';
 import 'package:flutter_generalshop/product/product_category.dart';
+import 'package:flutter_generalshop/screens/cart_test.dart';
 import 'package:flutter_generalshop/screens/single_product.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:flutter_generalshop/screens/utilities/size_config.dart';
@@ -87,9 +88,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-              child: Text('my'),
-              decoration: BoxDecoration(color: Colors.grey.shade100),
+            SizedBox(
+              height: 150,
             ),
             ListTile(
               title: Text('Cart'),
@@ -97,40 +97,53 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               trailing: Icon(Icons.arrow_forward_ios),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (contextScreen) => CartScreen()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (contextScreen) => CartScreen()));
               },
-            )
+            ),
+            ListTile(
+                title: Text('Home'),
+                leading: Icon(Icons.home),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (contextScreen) => HomePage()));
+                }),
           ],
         ),
       ),
-      appBar: AppBar(
-        title: Text(
-          'Home',
-        ),
-
-
-        actions: [Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {},
-              ))],
-        bottom: TabBar(
-          controller: tabController,
-          isScrollable: true,
-          indicatorWeight: 3,
-          tabs: _tabs(categories),
-          onTap: (int index) {
-            homeProductBloc.fetchProducts
-                .add(this.productsCategoriesList[index].category_id);
-          },
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(125),
+        child: AppBar(
+          title: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              'Home',
+            ),
+          ),
+          actions: [
+            Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {},
+                ))
+          ],
+          bottom: TabBar(
+            controller: tabController,
+            isScrollable: true,
+            indicatorWeight: 3,
+            tabs: _tabs(categories),
+            onTap: (int index) {
+              homeProductBloc.fetchProducts
+                  .add(this.productsCategoriesList[index].category_id);
+            },
+          ),
         ),
       ),
-
-
       body: Container(
         child: StreamBuilder(
           stream: homeProductBloc.productsStream,
@@ -191,7 +204,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             topProducts[position], productsContext);
                       },
                       child: Card(
-                        margin: EdgeInsets.only(right: 4, left: 4 , bottom: 2, top: 2),
+                        margin: EdgeInsets.only(
+                            right: 4, left: 4, bottom: 2, top: 2),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(9),
                         ),

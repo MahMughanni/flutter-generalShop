@@ -7,11 +7,9 @@ import 'package:flutter_generalshop/product/product_category.dart';
 class CategoriesStream implements Disposable {
   List<ProductCategory> categories;
 
-  StreamController<List<ProductCategory>> _categoriesController =
-      StreamController<List<ProductCategory>>.broadcast();
+  StreamController<List<ProductCategory>> _categoriesController = StreamController<List<ProductCategory>>.broadcast();
 
-  Stream<List<ProductCategory>> get categoriesStream =>
-      _categoriesController.stream;
+  Stream<List<ProductCategory>> get categoriesStream => _categoriesController.stream;
 
   StreamSink<List<ProductCategory>> get categorySink =>
       _categoriesController.sink;

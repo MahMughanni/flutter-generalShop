@@ -12,7 +12,7 @@ class APiUtl {
   static const String COUNTRIES = MAIN_API_URL + 'countries';
   static const String TAGS = MAIN_API_URL + 'tags';
   static const String CART = APiUtl.MAIN_API_URL + 'carts';
-  static const String REMOVE_FROM_CART = APiUtl.MAIN_API_URL + 'carts/remove';
+  static const String REMOVE_FROM_CART = APiUtl.MAIN_API_URL + 'carts';
 
   static String CATEGORY_PRODUCTS(int id, int page) {
     return MAIN_API_URL +
