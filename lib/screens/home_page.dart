@@ -97,8 +97,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               trailing: Icon(Icons.arrow_forward_ios),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (contextScreen) => CartScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (contextScreen) => CartScreen()));
               },
             ),
             ListTile(
@@ -111,6 +113,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       context,
                       MaterialPageRoute(
                           builder: (contextScreen) => HomePage()));
+                }),
+            ListTile(
+                title: Text('My Orders'),
+                leading: Icon(Icons.account_balance_wallet),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.pop(context);
+                }),
+            ListTile(
+                title: Text('Language'),
+                leading: Icon(Icons.language),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.pop(context);
+                }),
+            ListTile(
+                title: Text('Settings'),
+                leading: Icon(Icons.settings),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.pop(context);
                 }),
           ],
         ),

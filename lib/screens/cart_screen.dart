@@ -23,8 +23,14 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     screenConfig = ScreenConfig(context);
     widgetSize = WidgetSize(screenConfig);
-    screenHeight = MediaQuery.of(context).size.height;
-    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -60,33 +66,33 @@ class _CartScreenState extends State<CartScreen> {
                           },
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0, top: 4),
-                        child: Container(
-                          width: screenWidth * 0.75,
-                          height: widgetSize.buttonHeight,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Text(
-                              'Checkout All',
-                              style: TextStyle(
-                                  fontSize: widgetSize.buttonFontSize,
-                                  letterSpacing: 1,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal),
-                            ),
-                            color: ScreenUtilities.mainBlue,
-                            onPressed: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => CheckoutScreen(
-                              //             )));
-                            },
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(bottom: 8.0, top: 4),
+                      //   child: Container(
+                      //     width: screenWidth * 0.75,
+                      //     height: widgetSize.buttonHeight,
+                      //     child: RaisedButton(
+                      //       shape: RoundedRectangleBorder(
+                      //           borderRadius: BorderRadius.circular(10)),
+                      //       child: Text(
+                      //         'Checkout All',
+                      //         style: TextStyle(
+                      //             fontSize: widgetSize.buttonFontSize,
+                      //             letterSpacing: 1,
+                      //             color: Colors.white,
+                      //             fontWeight: FontWeight.normal),
+                      //       ),
+                      //       color: ScreenUtilities.mainBlue,
+                      //       onPressed: () {
+                      //         Navigator.push(
+                      //             context,
+                      //             MaterialPageRoute(
+                      //                 builder: (context) => CheckoutScreen(
+                      //                     )));
+                      //       },
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   );
                 } else {
@@ -120,7 +126,7 @@ class _CartScreenState extends State<CartScreen> {
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image:
-                              NetworkImage(cartItem.product.featuredImage()))),
+                          NetworkImage(cartItem.product.featuredImage()))),
                 ),
                 Flexible(
                   child: Column(
