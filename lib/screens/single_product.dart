@@ -5,6 +5,9 @@ import 'package:flutter_generalshop/screens/login.dart';
 import 'package:flutter_generalshop/screens/utilities/screen_utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'cart_screen.dart';
+import 'home_page.dart';
+
 class SingleProduct extends StatefulWidget {
   final Product product;
 
@@ -18,11 +21,63 @@ class _SingleProductState extends State<SingleProduct> {
   CartApi cartApi = CartApi();
   bool _addToCart = false;
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            SizedBox(
+              height: 150,
+            ),
+            ListTile(
+              title: Text('Cart'),
+              leading: Icon(Icons.shopping_cart),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (contextScreen) => CartScreen()));
+              },
+            ),
+            ListTile(
+                title: Text('Home'),
+                leading: Icon(Icons.home),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (contextScreen) => HomePage()));
+                }),
+            ListTile(
+                title: Text('My Orders'),
+                leading: Icon(Icons.account_balance_wallet),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.pop(context);
+                }),
+            ListTile(
+                title: Text('Language'),
+                leading: Icon(Icons.language),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.pop(context);
+                }),
+            ListTile(
+                title: Text('Settings'),
+                leading: Icon(Icons.settings),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.pop(context);
+                }),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(widget.product.product_title),
       ),

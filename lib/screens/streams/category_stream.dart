@@ -13,6 +13,7 @@ class CategoriesStream implements Disposable {
 
   StreamSink<List<ProductCategory>> get categorySink =>
       _categoriesController.sink;
+
   HelperAPi helperAPi = HelperAPi();
 
   CategoriesStream() {

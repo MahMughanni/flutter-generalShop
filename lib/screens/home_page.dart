@@ -211,6 +211,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         padding: EdgeInsets.only(top: 20.0),
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 16, bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Best Sell',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 22,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(
               height: MediaQuery.of(productsContext).size.height * 0.25,
               child: PageView.builder(
@@ -227,29 +242,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             topProducts[position], productsContext);
                       },
                       child: Card(
-                        margin: EdgeInsets.only(
-                            right: 4, left: 4, bottom: 2, top: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        child: Container(
-                          child: Image(
-                            loadingBuilder: (context, image,
-                                ImageChunkEvent progressLoading) {
-                              if (progressLoading == null) {
-                                return image;
-                              }
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            },
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                                topProducts[position].featuredImage()),
+                          color: Colors.grey.shade50,
+                          margin: EdgeInsets.only(
+                              right: 4, left: 4, bottom: 2, top: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9),
                           ),
-                        ),
-                      ),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: Stack(
+                            children: [
+                              Container(
+                                child: Image(
+                                  loadingBuilder: (context, image,
+                                      ImageChunkEvent progressLoading) {
+                                    if (progressLoading == null) {
+                                      return image;
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  image: NetworkImage(
+                                      topProducts[position].featuredImage()),
+                                ),
+                              ),
+                            ],
+                          )),
                     );
                   }),
             ),
@@ -267,16 +288,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 );
               },
             ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'All Products',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Flexible(
               child: Padding(
-                padding: EdgeInsets.only(top: 26, left: 8, right: 8),
+                padding: EdgeInsets.only(top: 26, left: 4, right: 4),
                 child: GridView.builder(
                     itemCount: products.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        mainAxisSpacing: 16,
-                        crossAxisSpacing: 16,
-                        childAspectRatio: .55),
+                        mainAxisSpacing: 2,
+                        crossAxisSpacing: 2,
+                        childAspectRatio: .80),
                     itemBuilder: (productsContext, int position) {
                       return InkWell(
                         onTap: () {
@@ -287,9 +323,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             SizedBox(
                               height: 150,
+                              width: 150,
                               child: Container(
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(9),
+                                    borderRadius: BorderRadius.circular(22),
                                     shape: BoxShape.rectangle),
                                 child: Image(
                                   loadingBuilder: (context, image,
@@ -377,7 +414,14 @@ List<Tab> _tabs(List<ProductCategory> categories) {
   List<Tab> tabsList = [];
   for (ProductCategory category in categories) {
     tabsList.add(Tab(
-      text: category.category_name,
+      child: Stack(
+        children: [
+          // Image(
+          //   image: NetworkImage(category.image_url),
+          // ),
+          Text(category.category_name),
+        ],
+      ),
     ));
   }
   return tabsList;
